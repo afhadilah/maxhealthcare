@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8"/>
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0"/>
+
+  <title>MAX HEALTH CARE</title>
+
+  <link rel="stylesheet" href="style.css"/>
+
+</head>
+
+<body class="login-body">
+
+  <div class="login-box">
+
+    <img src="assets/logo.png" class="logo"/>
+
+    <h1>MAX HEALTH CARE</h1>
+
+    <input
+      type="password"
+      id="masterPin"
+      placeholder="Enter PIN"
+    />
+
+    <button onclick="login()">
+      LOGIN
+    </button>
+
+    <p id="error"></p>
+
+  </div>
+
+<script>
+
+function login(){
+
+  const pin =
+  document.getElementById("masterPin").value;
+
+  if(pin === "887766"){
+
+    localStorage.setItem("admin","true");
+
+    window.location.href = "admin.html";
+
+  }
+
+  else if(pin === "2026"){
+
+    localStorage.setItem("loggedIn","true");
+
+    window.location.href = "dashboard.html";
+
+  }
+
+  else{
+
+    document.getElementById("error")
+    .innerText = "Wrong PIN";
+
+  }
+
+}
+
+</script>
+
+</body>
+
+</html>
