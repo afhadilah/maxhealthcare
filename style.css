@@ -10,6 +10,10 @@ body{
   color:white;
 }
 
+/* =========================
+   LOGIN
+========================= */
+
 .login-body{
   display:flex;
   justify-content:center;
@@ -24,27 +28,23 @@ body{
 
 .login-box{
   width:380px;
-
   padding:40px;
-
   border-radius:25px;
-
   background:rgba(30,41,59,.8);
-
   backdrop-filter:blur(15px);
-
   border:1px solid rgba(255,255,255,.1);
-
   text-align:center;
-
-  box-shadow:
-  0 0 40px rgba(37,99,235,.3);
+  box-shadow:0 0 40px rgba(37,99,235,.3);
 }
 
 .logo{
   width:180px;
   margin-bottom:20px;
 }
+
+/* =========================
+   INPUT + BUTTON GLOBAL
+========================= */
 
 input{
   width:100%;
@@ -63,11 +63,11 @@ button{
   border-radius:12px;
   margin-top:15px;
   cursor:pointer;
-  background:
-  linear-gradient(135deg,#2563eb,#3b82f6);
+  background:linear-gradient(135deg,#2563eb,#3b82f6);
   color:white;
   font-weight:bold;
   transition:.25s ease;
+  max-width:100%;
 }
 
 button:hover{
@@ -96,6 +96,9 @@ button:hover{
   align-items:center;
   padding:20px;
   background:#111827;
+  position:sticky;
+  top:0;
+  z-index:100;
 }
 
 .top-logo{
@@ -103,7 +106,7 @@ button:hover{
 }
 
 /* =========================
-   DASHBOARD CONTAINER
+   DASHBOARD
 ========================= */
 
 .container{
@@ -121,37 +124,27 @@ button:hover{
 
 #staffList{
   display:grid;
-
-  grid-template-columns:
-  repeat(auto-fit,minmax(300px,1fr));
-
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
   gap:20px;
-
   margin-top:30px;
 }
 
 /* STAFF CARD */
 
 .staff-card{
-  background:
-  linear-gradient(
+  background:linear-gradient(
     145deg,
     rgba(30,41,59,.95),
     rgba(15,23,42,.95)
   );
-
   padding:25px;
-
   border-radius:25px;
-
   cursor:pointer;
-
   transition:.3s;
 }
 
 .staff-card:hover{
-  transform:
-  translateY(-5px);
+  transform:translateY(-5px);
 }
 
 .staff-name{
@@ -191,7 +184,6 @@ button:hover{
   width:100%;
   height:100%;
   background:rgba(0,0,0,.6);
-
   display:flex;
   justify-content:center;
   align-items:center;
@@ -204,7 +196,9 @@ button:hover{
   border-radius:25px;
 }
 
-/* STAFF ACTIONS */
+/* =========================
+   STAFF ACTIONS
+========================= */
 
 .staff-actions{
   display:flex;
@@ -213,13 +207,11 @@ button:hover{
 }
 
 .red-btn{
-  background:
-  linear-gradient(135deg,#dc2626,#ef4444);
+  background:linear-gradient(135deg,#dc2626,#ef4444);
 }
 
 .orange-btn{
-  background:
-  linear-gradient(135deg,#ea580c,#f97316);
+  background:linear-gradient(135deg,#ea580c,#f97316);
 }
 
 /* =========================
@@ -227,26 +219,16 @@ button:hover{
 ========================= */
 
 .admin-panel{
-
-  background:
-  linear-gradient(
+  background:linear-gradient(
     145deg,
     rgba(30,41,59,.95),
     rgba(15,23,42,.95)
   );
-
   border-radius:30px;
-
   padding:35px;
-
   margin-bottom:40px;
-
-  border:1px solid
-  rgba(255,255,255,.05);
-
-  box-shadow:
-  0 15px 35px
-  rgba(0,0,0,.25);
+  border:1px solid rgba(255,255,255,.05);
+  box-shadow:0 15px 35px rgba(0,0,0,.25);
 }
 
 .panel-header{
@@ -264,13 +246,12 @@ button:hover{
 }
 
 /* =========================
-   GRID FORM
+   FORM GRID
 ========================= */
 
 .admin-form-grid{
   display:grid;
-  grid-template-columns:
-  repeat(auto-fit,minmax(250px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
   gap:20px;
   margin-bottom:25px;
 }
@@ -304,8 +285,7 @@ button:hover{
 .input-group input:focus{
   outline:none;
   border:1px solid #3b82f6;
-  box-shadow:
-  0 0 20px rgba(59,130,246,.25);
+  box-shadow:0 0 20px rgba(59,130,246,.25);
 }
 
 /* ADD BUTTON */
@@ -314,18 +294,87 @@ button:hover{
   height:55px;
   font-size:16px;
   border-radius:15px;
-  background:
-  linear-gradient(
-    135deg,
-    #2563eb,
-    #3b82f6
-  );
-
+  background:linear-gradient(135deg,#2563eb,#3b82f6);
   transition:.3s;
 }
 
 .add-btn:hover{
   transform:translateY(-3px);
-  box-shadow:
-  0 10px 25px rgba(37,99,235,.35);
+  box-shadow:0 10px 25px rgba(37,99,235,.35);
+}
+
+/* =========================
+   📱 RESPONSIVE SYSTEM
+========================= */
+
+/* TABLET */
+@media (max-width: 1024px){
+
+  .container{
+    padding:20px;
+  }
+
+  #staffList{
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  }
+
+  .admin-panel{
+    padding:25px;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 768px){
+
+  .topbar{
+    flex-direction:column;
+    gap:10px;
+    text-align:center;
+  }
+
+  .top-logo{
+    width:90px;
+  }
+
+  .container{
+    padding:15px;
+  }
+
+  #staffList{
+    grid-template-columns:1fr;
+  }
+
+  .staff-card{
+    padding:18px;
+  }
+
+  .staff-name{
+    font-size:20px;
+  }
+
+  .admin-form-grid{
+    grid-template-columns:1fr;
+  }
+
+  button{
+    font-size:14px;
+    padding:12px;
+  }
+
+  .modal-box{
+    width:90%;
+  }
+}
+
+/* SMALL PHONE */
+@media (max-width: 400px){
+
+  .login-box{
+    width:90%;
+    padding:25px;
+  }
+
+  .staff-card{
+    border-radius:18px;
+  }
 }
