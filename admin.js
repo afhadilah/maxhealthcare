@@ -1,26 +1,66 @@
+// =====================
+// AUTH
+// =====================
 if(localStorage.getItem("admin") !== "true"){
-
   window.location.href = "index.html";
-
 }
 
 function logout(){
-
   localStorage.removeItem("admin");
-
   window.location.href = "index.html";
+}
+
+// =====================
+// POPUP CONFIRM SYSTEM
+// =====================
+function showConfirm(message, onConfirm){
+
+  const modal = document.createElement("div");
+  modal.className = "modal";
+
+  modal.innerHTML = `
+    <div class="modal-box">
+
+      <h2>⚠️ Confirmation</h2>
+
+      <p style="margin:15px 0;color:#cbd5e1;">
+        ${message}
+      </p>
+
+      <div style="display:flex;gap:10px;">
+
+        <button id="yesBtn" class="red-btn">YES</button>
+        <button onclick="closeModal()">CANCEL</button>
+
+      </div>
+
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  document.getElementById("yesBtn").onclick = () => {
+    closeModal();
+    onConfirm();
+  };
 
 }
 
-const container =
-document.getElementById("staffList");
+function closeModal(){
+  const modal = document.querySelector(".modal");
+  if(modal) modal.remove();
+}
 
-db.collection("staff")
-.onSnapshot((snapshot)=>{
+// =====================
+// FIRESTORE
+// =====================
+const container = document.getElementById("staffList");
+
+db.collection("staff").onSnapshot(snapshot=>{
 
   container.innerHTML = "";
 
-  snapshot.forEach((doc)=>{
+  snapshot.forEach(doc=>{
 
     const staff = doc.data();
 
@@ -30,60 +70,29 @@ db.collection("staff")
 
         <h2>${staff.name}</h2>
 
-        <input
-        id="position-${doc.id}"
-        value="${staff.position}">
-
-        <input
-        id="pin-${doc.id}"
-        value="${staff.pin}">
+        <input id="position-${doc.id}" value="${staff.position}">
+        <input id="pin-${doc.id}" value="${staff.pin}">
 
         <p class="${staff.onDuty ? 'on':'off'}">
-
-          ${staff.onDuty
-          ? '🟢 ON DUTY'
-          : '🔴 OFF DUTY'}
-
+          ${staff.onDuty ? '🟢 ON DUTY' : '🔴 OFF DUTY'}
         </p>
 
-        <p>
-
-          ⏱
-          ${formatTime(
-          staff.totalTime || 0)}
-
-        </p>
+        <p>⏱ ${formatTime(staff.totalTime || 0)}</p>
 
         <div class="staff-actions">
 
-          <button
-          onclick="saveStaff('${doc.id}')">
+          <button onclick="saveStaff('${doc.id}')">SAVE</button>
 
-            SAVE
-
-          </button>
-
-          <button
-          class="orange-btn"
-          onclick="forceStop('${doc.id}')">
-
+          <button class="orange-btn" onclick="forceStop('${doc.id}')">
             FORCE STOP
-
           </button>
 
-          <button
-          onclick="resetTime('${doc.id}')">
-
+          <button onclick="resetTime('${doc.id}')">
             RESET TIME
-
           </button>
 
-          <button
-          class="red-btn"
-          onclick="deleteStaff('${doc.id}')">
-
+          <button class="red-btn" onclick="deleteStaff('${doc.id}')">
             DELETE
-
           </button>
 
         </div>
@@ -96,166 +105,114 @@ db.collection("staff")
 
 });
 
+// =====================
+// ADD STAFF
+// =====================
 async function addStaff(){
 
-  const name =
-  document.getElementById("name").value;
-
-  const position =
-  document.getElementById("position").value;
-
-  const pin =
-  document.getElementById("pin").value;
+  const name = document.getElementById("name").value;
+  const position = document.getElementById("position").value;
+  const pin = document.getElementById("pin").value;
 
   if(!name || !position || !pin){
-
     alert("Complete all fields");
-
     return;
-
   }
 
-  await db.collection("staff").add({
+  showConfirm(`Add staff ${name}?`, async ()=>{
 
-    name:name,
-
-    position:position,
-
-    pin:pin,
-
-    onDuty:false,
-
-    totalTime:0,
-
-    startTime:0
-
-  });
-
-}
-
-async function saveStaff(id){
-
-  const position =
-  document.getElementById(`position-${id}`).value;
-
-  const pin =
-  document.getElementById(`pin-${id}`).value;
-
-  await db.collection("staff")
-  .doc(id)
-  .update({
-
-    position:position,
-
-    pin:pin
-
-  });
-
-}
-
-async function deleteStaff(id){
-
-  await db.collection("logs").add({
-
-    staffId:id,
-
-    action:"DELETE STAFF",
-
-    timestamp:Date.now()
-
-  });
-
-  await db.collection("staff")
-  .doc(id)
-  .delete();
-
-}
-
-async function forceStop(id){
-
-  await db.collection("logs").add({
-
-    staffId:id,
-
-    action:"FORCE STOP",
-
-    timestamp:Date.now()
-
-  });
-
-  await db.collection("staff")
-  .doc(id)
-  .update({
-
-    onDuty:false
-
-  });
-
-}
-
-async function resetTime(id){
-
-  await db.collection("logs").add({
-
-    staffId:id,
-
-    action:"RESET TIME",
-
-    timestamp:Date.now()
-
-  });
-
-  await db.collection("staff")
-  .doc(id)
-  .update({
-
-    totalTime:0,
-
-    startTime:0
-
-  });
-
-}
-
-async function resetAllTime(){
-
-  const snapshot =
-  await db.collection("staff").get();
-
-  snapshot.forEach(async (doc)=>{
-
-    await db.collection("staff")
-    .doc(doc.id)
-    .update({
-
+    await db.collection("staff").add({
+      name,
+      position,
+      pin,
+      onDuty:false,
       totalTime:0,
-
       startTime:0
-
     });
 
   });
 
 }
 
-function formatTime(ms){
+// =====================
+// SAVE STAFF
+// =====================
+async function saveStaff(id){
 
-  const totalSeconds =
-  Math.floor(ms / 1000);
+  const position = document.getElementById(`position-${id}`).value;
+  const pin = document.getElementById(`pin-${id}`).value;
 
-  const hours =
-  Math.floor(totalSeconds / 3600);
+  showConfirm("Save changes?", async ()=>{
 
-  const minutes =
-  Math.floor((totalSeconds % 3600)/60);
+    await db.collection("staff").doc(id).update({
+      position,
+      pin
+    });
 
-  const seconds =
-  totalSeconds % 60;
+  });
 
-  return `
-  ${hours}h
-  ${minutes}m
-  ${seconds}s
-  `;
+}
+
+// =====================
+// DELETE
+// =====================
+async function deleteStaff(id){
+
+  showConfirm("DELETE this staff permanently?", async ()=>{
+
+    await db.collection("staff").doc(id).delete();
+
+  });
+
+}
+
+// =====================
+// FORCE STOP
+// =====================
+async function forceStop(id){
+
+  showConfirm("Force stop duty?", async ()=>{
+
+    await db.collection("staff").doc(id).update({
+      onDuty:false
+    });
+
+  });
+
+}
+
+// =====================
+// RESET TIME
+// =====================
+async function resetTime(id){
+
+  showConfirm("Reset time?", async ()=>{
+
+    await db.collection("staff").doc(id).update({
+      totalTime:0,
+      startTime:0
+    });
+
+  });
+
+}
+
+// =====================
+// RESET ALL
+// =====================
+async function resetAllTime(){
+
+  showConfirm("RESET ALL STAFF TIME?", async ()=>{
+
+    const snapshot = await db.collection("staff").get();
+
+    snapshot.forEach(doc=>{
+      db.collection("staff").doc(doc.id).update({
+        totalTime:0,
+        startTime:0
+      });
+    });
+
+  });
 
 }

@@ -4,16 +4,14 @@
 <head>
 
   <meta charset="UTF-8"/>
-
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
   <title>Admin Panel</title>
 
   <link rel="stylesheet" href="style.css"/>
 
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 </head>
@@ -22,14 +20,9 @@
 
 <div class="topbar">
 
-  <img src="assets/logo.png"
-       class="top-logo"/>
+  <img src="assets/logo.png" class="top-logo"/>
 
-  <button onclick="logout()">
-
-    Logout
-
-  </button>
+  <button onclick="logout()">Logout</button>
 
 </div>
 
@@ -38,85 +31,54 @@
   <h1>ADMIN PANEL</h1>
 
   <!-- ADD STAFF PANEL -->
-
   <div class="admin-panel">
 
     <div class="panel-header">
 
       <h2>👨‍⚕️ ADD NEW STAFF</h2>
 
-      <p>
-        Register new hospital staff
-        into realtime duty system
-      </p>
+      <p>Register new hospital staff into realtime duty system</p>
 
     </div>
 
     <div class="admin-form-grid">
 
       <div class="input-group">
-
         <label>STAFF NAME</label>
-
-        <input
-        type="text"
-        id="name"
-        placeholder="Example : Akbar">
-
+        <input type="text" id="name" placeholder="Example : Akbar">
       </div>
 
       <div class="input-group">
-
         <label>POSITION</label>
-
-        <input
-        type="text"
-        id="position"
-        placeholder="Example : Doctor">
-
+        <input type="text" id="position" placeholder="Example : Doctor">
       </div>
 
       <div class="input-group">
-
         <label>SECURITY PIN</label>
-
-        <input
-        type="password"
-        id="pin"
-        placeholder="4-6 Digit PIN">
-
+        <input type="password" id="pin" placeholder="4-6 Digit PIN">
       </div>
 
     </div>
 
-    <button
-    class="add-btn"
-    onclick="addStaff()">
-
+    <button class="add-btn" onclick="addStaff()">
       ➕ ADD STAFF
-
     </button>
 
-    <button
-    onclick="resetAllTime()"
-    class="orange-btn">
-
+    <button onclick="resetAllTime()" class="orange-btn">
       ⏱ RESET ALL STAFF TIME
-
     </button>
 
   </div>
 
   <!-- STAFF LIST -->
-
   <div id="staffList"></div>
 
 </div>
 
+<!-- SCRIPTS ORDER (WAJIB) -->
 <script src="firebase-config.js"></script>
-
+<script src="time-engine.js"></script>
 <script src="admin.js"></script>
 
 </body>
-
 </html>
