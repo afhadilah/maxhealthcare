@@ -387,7 +387,33 @@ Continue?`;
   });
 
 }
+// =====================
+// SEARCH STAFF
+// =====================
 
+function searchStaff() {
+
+  const keyword =
+    document
+      .getElementById("searchInput")
+      .value
+      .toLowerCase();
+
+  document
+    .querySelectorAll(".staff-card")
+    .forEach(card => {
+
+      const text =
+        card.textContent.toLowerCase();
+
+      card.style.display =
+        text.includes(keyword)
+          ? ""
+          : "none";
+
+    });
+
+}
 // =====================
 // GOOGLE SHEETS LOG (Staff Attendance)
 // =====================
