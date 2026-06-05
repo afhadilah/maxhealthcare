@@ -5,7 +5,16 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>MAX HEALTH CARE</title>
+
 <link rel="stylesheet" href="style.css"/>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<!-- Config Firebase -->
+<script src="firebase-config.js"></script>
+
 </head>
 
 <body class="login-body">
@@ -13,10 +22,18 @@
 <div class="login-box">
 
   <img src="assets/logo.png" class="logo"/>
+
   <h1>MAX HEALTH CARE</h1>
 
-  <input type="password" id="masterPin" placeholder="Enter PIN"/>
-  <button onclick="login()">LOGIN</button>
+  <input
+    type="password"
+    id="masterPin"
+    placeholder="Enter PIN"
+  />
+
+  <button onclick="login()">
+    LOGIN
+  </button>
 
   <p id="error"></p>
 
@@ -28,22 +45,74 @@
 
 <script>
 
-function login(){
+async function login(){
 
-  const pin = document.getElementById("masterPin").value;
+  const pin =
+    document.getElementById("masterPin").value.trim();
 
-  if(pin === "887766"){
-    localStorage.setItem("admin","true");
-    window.location.href = "admin.html";
+  try{
+
+    const doc =
+      await db
+        .collection("settings")
+        .doc("pins")
+        .get();
+
+    if(!doc.exists){
+
+      document.getElementById("error").innerText =
+        "PIN settings not found";
+
+      return;
+    }
+
+    const data = doc.data();
+
+console.log(data);
+console.log("PIN INPUT =", pin);
+console.log("ADMIN PIN =", data.adminPin);
+
+if(pin === data.adminPin){
+
+  localStorage.setItem("admin","true");
+
+  localStorage.setItem(
+    "loginTime",
+    Date.now()
+  );
+
+  window.location.href =
+    "admin.html";
+
+  return;
+}
+
+if(pin === data.staffPin){
+
+  localStorage.setItem("loggedIn","true");
+
+  localStorage.setItem(
+    "loginTime",
+    Date.now()
+  );
+
+  window.location.href =
+    "dashboard.html";
+
+  return;
+}
+
+    document.getElementById("error").innerText =
+      "Wrong PIN";
+
   }
+  catch(error){
 
-  else if(pin === "2026"){
-    localStorage.setItem("loggedIn","true");
-    window.location.href = "dashboard.html";
-  }
+    console.error(error);
 
-  else{
-    document.getElementById("error").innerText = "Wrong PIN";
+    document.getElementById("error").innerText =
+      "Connection Error";
+
   }
 
 }

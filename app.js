@@ -1,12 +1,35 @@
 // =====================
 // AUTH
 // =====================
-if (localStorage.getItem("loggedIn") !== "true") {
-  window.location.href = "index.html";
-}
-function logout() {
+
+const loginStatus =
+  localStorage.getItem("loggedIn");
+
+const loginTime =
+  Number(localStorage.getItem("loginTime") || 0);
+
+const SESSION_DURATION =
+  1000 * 60 * 30; // 30 menit
+
+if (
+  loginStatus !== "true" ||
+  Date.now() - loginTime > SESSION_DURATION
+) {
+
   localStorage.removeItem("loggedIn");
+  localStorage.removeItem("loginTime");
+
   window.location.href = "index.html";
+
+}
+
+function logout() {
+
+  localStorage.removeItem("loggedIn");
+  localStorage.removeItem("loginTime");
+
+  window.location.href = "index.html";
+
 }
 
 // =====================
@@ -18,33 +41,61 @@ clock.className = "live-clock";
 document.querySelector(".container").prepend(clock);
 setInterval(() => {
   clock.innerHTML = "🕒 " + new Date().toLocaleString();
-}, 1000);
+}, 60000);
 
 let inventoryItems = [];
+
 db.collection("inventory").onSnapshot(snapshot => {
-  inventoryItems = [];
-  snapshot.forEach(doc => {
-    inventoryItems.push({ id: doc.id, ...doc.data() });
-  });
-});
+
+  inventoryItems =
+    snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+}); // <-- PENUTUP INVENTORY SNAPSHOT
 
 db.collection("staff").onSnapshot(snapshot => {
-  staffContainer.innerHTML = "";
+
+  let html = "";
+
   snapshot.forEach(doc => {
+
     const staff = doc.data();
-    const duration = staff.onDuty ? getSafeDuration(staff.startTime) : 0;
-    const total = (Number(staff.totalTime) || 0) + duration;
-    staffContainer.innerHTML += `
+
+    const duration =
+      staff.onDuty
+        ? getSafeDuration(staff.startTime)
+        : 0;
+
+    const total =
+      (Number(staff.totalTime) || 0) + duration;
+
+    html += `
       <div class="staff-card" onclick="openModal('${doc.id}')">
-        <div class="staff-name">${staff.name}</div>
+
+        <div class="staff-name">
+          ${staff.name}
+        </div>
+
         <p>${staff.position}</p>
+
         <div class="status ${staff.onDuty ? 'on' : 'off'}">
           ${staff.onDuty ? '🟢 ON DUTY' : '🔴 OFF DUTY'}
         </div>
-        <div class="timer">⏱ ${formatTime(total)}</div>
-      </div>`;
+
+        <div class="timer">
+          ⏱ ${formatTime(total)}
+        </div>
+
+      </div>
+    `;
+
   });
-});
+
+  staffContainer.innerHTML = html;
+
+}); // <-- PENUTUP STAFF SNAPSHOT
 
 // =====================
 // MODAL DIALOG (Staff)

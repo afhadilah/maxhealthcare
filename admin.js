@@ -3,15 +3,37 @@
 // Assumptions: `db`, `formatTime`, `getSafeDuration` are available.
 
 // =====================
-// AUTH
+// AUTH ADMIN
 // =====================
-if (localStorage.getItem("admin") !== "true") {
+
+const adminStatus =
+  localStorage.getItem("admin");
+
+const loginTime =
+  Number(localStorage.getItem("loginTime") || 0);
+
+const SESSION_DURATION =
+  1000 * 60 * 30; // 30 menit
+
+if (
+  adminStatus !== "true" ||
+  Date.now() - loginTime > SESSION_DURATION
+) {
+
+  localStorage.removeItem("admin");
+  localStorage.removeItem("loginTime");
+
   window.location.href = "index.html";
+
 }
 
 function logout() {
+
   localStorage.removeItem("admin");
+  localStorage.removeItem("loginTime");
+
   window.location.href = "index.html";
+
 }
 
 // =====================
@@ -198,7 +220,21 @@ db.collection("inventory").onSnapshot(snapshot => {
   inventoryContainer.innerHTML = "";
   snapshot.forEach(doc => {
     const item = doc.data();
-    inventoryContainer.innerHTML += `
+    let html = "";
+
+snapshot.forEach(doc => {
+
+  const staff = doc.data();
+
+  html += `
+    <div class="staff-card">
+      ...
+    </div>
+  `;
+
+});
+
+staffContainer.innerHTML = html;`
       <div class="inventory-card">
         <h3>${item.name}</h3>
         <input class="inventory-input" id="inv-name-${doc.id}" value="${item.name}">
