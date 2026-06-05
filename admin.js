@@ -217,34 +217,53 @@ async function resetAllTime() {
 // =====================
 const inventoryContainer = document.getElementById("inventoryList");
 db.collection("inventory").onSnapshot(snapshot => {
-  inventoryContainer.innerHTML = "";
+
+  let html = "";
+
   snapshot.forEach(doc => {
+
     const item = doc.data();
-    let html = "";
 
-snapshot.forEach(doc => {
-
-  const staff = doc.data();
-
-  html += `
-    <div class="staff-card">
-      ...
-    </div>
-  `;
-
-});
-
-staffContainer.innerHTML = html;`
+    html += `
       <div class="inventory-card">
+
         <h3>${item.name}</h3>
-        <input class="inventory-input" id="inv-name-${doc.id}" value="${item.name}">
-        <input class="inventory-input" type="number" id="inv-qty-${doc.id}" value="${item.qty}">
+
+        <input
+          class="inventory-input"
+          id="inv-name-${doc.id}"
+          value="${item.name}"
+        >
+
+        <input
+          class="inventory-input"
+          type="number"
+          id="inv-qty-${doc.id}"
+          value="${item.qty}"
+        >
+
         <div class="inventory-actions">
-          <button onclick="saveInventory('${doc.id}')">SAVE</button>
-          <button class="red-btn" onclick="deleteInventory('${doc.id}')">DELETE</button>
+
+          <button onclick="saveInventory('${doc.id}')">
+            SAVE
+          </button>
+
+          <button
+            class="red-btn"
+            onclick="deleteInventory('${doc.id}')"
+          >
+            DELETE
+          </button>
+
         </div>
-      </div>`;
+
+      </div>
+    `;
+
   });
+
+  inventoryContainer.innerHTML = html;
+
 });
 
 // =====================
@@ -252,41 +271,75 @@ staffContainer.innerHTML = html;`
 // =====================
 async function addInventory() {
 
-  const name = document.getElementById("inventoryName").value.trim();
-  const qty = Number(document.getElementById("inventoryQty").value);
+  const name =
+    document.getElementById("inventoryName")
+    .value
+    .trim();
+
+  const qty =
+    Number(
+      document.getElementById("inventoryQty").value
+    );
 
   if (!name) {
-    alert("Enter item name");
+    showAlert("Enter item name");
     return;
   }
 
-  if (qty < 0) {
-    alert("Invalid quantity");
+  if (qty <= 0) {
+    showAlert("Invalid quantity");
     return;
   }
 
-  showConfirm(`Add inventory item ${name}?`, async () => {
+  showConfirm(
+    `Add ${qty} ${name}?`,
+    async () => {
 
-    await db.collection("inventory").add({
+const existingSnapshot =
+  await db.collection("inventory")
+  .where("name","==",name)
+  .limit(1)
+  .get();
+
+if (!existingSnapshot.empty) {
+
+  const existingDoc =
+    existingSnapshot.docs[0];
+
+  const currentQty =
+    Number(existingDoc.data().qty || 0);
+
+  await db.collection("inventory")
+    .doc(existingDoc.id)
+    .update({
+      qty: currentQty + qty
+    });
+
+} else {
+
+  await db.collection("inventory")
+    .add({
       name,
       qty
     });
 
-    sendInventoryLogToSheet({
-      actionType:"ADD",
-      actor:"ADMIN",
-      productName:name,
-      qty:qty,
-      description:"Added inventory"
-    });
+      }
 
-    document.getElementById("inventoryName").value = "";
-    document.getElementById("inventoryQty").value = "";
+      sendInventoryLogToSheet({
+        actionType:"ADD",
+        actor:"ADMIN",
+        productName:name,
+        qty:qty,
+        description:"Inventory added"
+      });
 
-  });
+      document.getElementById("inventoryName").value = "";
+      document.getElementById("inventoryQty").value = "";
+
+    }
+  );
 
 }
-
 // =====================
 // SAVE (EDIT) INVENTORY
 // =====================
