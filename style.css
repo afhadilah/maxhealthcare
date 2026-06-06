@@ -327,13 +327,24 @@ button:hover{
 @media (max-width: 768px){
 
   .topbar{
-    flex-direction:column;
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:10px 15px;
     gap:10px;
-    text-align:center;
   }
 
   .top-logo{
-    width:90px;
+    width:55px;
+  }
+
+  .topbar button{
+    width:auto;
+    margin-top:0;
+    padding:8px 14px;
+    font-size:13px;
   }
 
   .container{
@@ -354,11 +365,6 @@ button:hover{
 
   .admin-form-grid{
     grid-template-columns:1fr;
-  }
-
-  button{
-    font-size:14px;
-    padding:12px;
   }
 
   .modal-box{
