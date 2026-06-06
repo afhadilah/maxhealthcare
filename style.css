@@ -94,7 +94,7 @@ button:hover{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:20px;
+  padding:8px 12px;
   background:#111827;
   position:sticky;
   top:0;
@@ -102,7 +102,17 @@ button:hover{
 }
 
 .top-logo{
-  width:120px;
+  width:40px;
+  height:40px;
+  object-fit:contain;
+}
+
+.topbar button{
+  width:auto;
+  margin:0;
+  padding:6px 12px;
+  font-size:12px;
+  border-radius:8px;
 }
 
 /* =========================
@@ -324,31 +334,28 @@ button:hover{
 }
 
 /* MOBILE */
-@media (max-width: 768px){
+@media (max-width:768px){
 
   .topbar{
-    display:flex;
-    flex-direction:row;
-    justify-content:space-between;
-    align-items:center;
-
-    padding:10px 15px;
-    gap:10px;
+    padding:5px 8px;
+    min-height:45px;
   }
 
   .top-logo{
-    width:55px;
+    width:28px;
+    height:28px;
   }
 
   .topbar button{
     width:auto;
-    margin-top:0;
-    padding:8px 14px;
-    font-size:13px;
+    margin:0;
+    padding:4px 8px;
+    font-size:10px;
+    border-radius:6px;
   }
 
   .container{
-    padding:15px;
+    padding:12px;
   }
 
   #staffList{
@@ -370,6 +377,7 @@ button:hover{
   .modal-box{
     width:90%;
   }
+
 }
 
 /* SMALL PHONE */
@@ -383,6 +391,7 @@ button:hover{
   .staff-card{
     border-radius:18px;
   }
+
 }
 #inventoryList{
   display:grid;
